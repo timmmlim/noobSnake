@@ -1,4 +1,4 @@
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -6,7 +6,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Random;
-import javax.swing.Timer;
 
 public class GamePanel extends JPanel implements ActionListener {
 
@@ -47,11 +46,10 @@ public class GamePanel extends JPanel implements ActionListener {
     }
 
     public void startGame(){
-        newApple();
         isRunning = true;
         timer = new Timer(DELAY, this);
         timer.start();
-
+        newApple();
     }
 
     public void paintComponent(Graphics g){
@@ -165,7 +163,27 @@ public class GamePanel extends JPanel implements ActionListener {
         FontMetrics metrics2 = getFontMetrics(g.getFont());
         g.drawString("Game Over", (SCREEN_WIDTH - metrics2.stringWidth("Game Over"))/2, SCREEN_HEIGHT/2);
 
-        // TODO: restart game
+        // restart game
+        JButton b = new JButton("Restart Game");
+        Dimension prefSize = b.getPreferredSize();
+        b.setLocation((SCREEN_WIDTH - 100)/2, SCREEN_HEIGHT - 100);
+        b.setSize(prefSize);
+        this.add(b);
+        b.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                restartGame();
+            }
+        });
+    }
+
+    public void restartGame(){
+        // close current gameFrame
+        JFrame currFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        currFrame.setVisible(false);
+        currFrame.dispose();
+
+        new GameFrame();
     }
 
     @Override
@@ -174,8 +192,8 @@ public class GamePanel extends JPanel implements ActionListener {
             move();
             checkApple();
             checkCollisions();
+            repaint();
         }
-        repaint();
     }
 
     public class MyKeyAdapter extends KeyAdapter{
